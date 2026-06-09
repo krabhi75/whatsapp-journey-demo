@@ -2,12 +2,17 @@
 
 import { useEffect, useState } from 'react';
 
+interface LeadAnswers {
+  referenceId?: string;
+  [key: string]: string | number | boolean | undefined;
+}
+
 interface Lead {
   id: string;
   name: string;
   phone: string;
   step: string;
-  answers: Record<string, unknown>;
+  answers: LeadAnswers;
   score?: { leadScore: number; temperature: string; priority?: string; summary: string };
   messages: Array<{ direction: string; text: string; at: string }>;
   updatedAt: string;
@@ -111,16 +116,16 @@ export default function Home() {
           <div key={lead.id} style={{ borderTop: '1px solid #e2e8f0', paddingTop: 12, marginTop: 12 }}>
             <div>
               <strong>{lead.name}</strong> · +{lead.phone} · <em>{lead.step}</em>
-              {lead.answers.referenceId != null && lead.answers.referenceId !== '' ? (
+              {lead.answers.referenceId ? (
                 <span style={{ marginLeft: 8, fontSize: 12, color: '#6366f1' }}>
-                  {String(lead.answers.referenceId)}
+                  {lead.answers.referenceId}
                 </span>
               ) : null}
-              {lead.score && (
+              {lead.score ? (
                 <span style={{ marginLeft: 8, color: lead.score.priority === 'HIGH' ? '#dc2626' : '#2563eb' }}>
                   {lead.score.priority} · {lead.score.leadScore}/100
                 </span>
-              )}
+              ) : null}
             </div>
             <div style={{ fontSize: 12, color: '#64748b', marginTop: 6, maxHeight: 120, overflow: 'auto' }}>
               {lead.messages.map((m, i) => (
