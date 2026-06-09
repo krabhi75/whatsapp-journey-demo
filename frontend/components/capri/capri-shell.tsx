@@ -2,26 +2,62 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ReactNode } from 'react';
-import { CAPRI_TENANT } from '@/lib/capri-demo-data';
+import { ReactNode, useState } from 'react';
+import { CAPRI_BRAND, CAPRI_TENANT } from '@/lib/capri-demo-data';
 import { CapriIcon } from './capri-icon';
 import { useCapriDemo } from './capri-demo-context';
 
 const NAV = [
-  { href: '/capri/whatsapp', label: 'Dashboard', icon: 'dashboard', section: 'main', matchPrefix: '/capri/whatsapp' },
-  { href: '/capri/leads', label: 'Leads', icon: 'group', section: 'main', matchPrefix: '/capri/leads' },
-  { href: '/capri/whatsapp', label: 'WhatsApp', icon: 'chat', section: 'main', matchPrefix: '/capri/whatsapp' },
-  { href: '/capri/callbacks', label: 'Calls & Callbacks', icon: 'call', section: 'main', matchPrefix: '/capri/callbacks' },
-  { href: '/capri/integrations', label: 'Integrations', icon: 'extension', section: 'main', matchPrefix: '/capri/integrations' },
-  { href: '/capri/settings', label: 'Settings', icon: 'settings', section: 'main', matchPrefix: '/capri/settings' },
+  { href: '/capri/whatsapp', label: 'Dashboard', icon: 'dashboard', matchPrefix: '/capri/whatsapp' },
+  { href: '/capri/leads', label: 'Leads', icon: 'group', matchPrefix: '/capri/leads' },
+  { href: '/capri/whatsapp', label: 'WhatsApp', icon: 'chat', matchPrefix: '/capri/whatsapp' },
+  { href: '/capri/callbacks', label: 'Calls & Callbacks', icon: 'call', matchPrefix: '/capri/callbacks' },
+  { href: '/capri/integrations', label: 'Integrations', icon: 'extension', matchPrefix: '/capri/integrations' },
+  { href: '/capri/settings', label: 'Settings', icon: 'settings', matchPrefix: '/capri/settings' },
 ] as const;
 
-function isActive(pathname: string, matchPrefix: string) {
-  if (matchPrefix === '/capri/leads') {
-    return pathname.startsWith('/capri/leads');
+function isActive(pathname: string, matchPrefix: string, label: string) {
+  if (label === 'Dashboard') {
+    return pathname === '/capri' || pathname === '/capri/whatsapp';
   }
-  if (pathname === '/capri' && matchPrefix === '/capri/whatsapp') return true;
+  if (label === 'WhatsApp') {
+    return pathname.startsWith('/capri/whatsapp') && pathname !== '/capri/whatsapp';
+  }
+  if (matchPrefix === '/capri/leads') return pathname.startsWith('/capri/leads');
   return pathname === matchPrefix || pathname.startsWith(matchPrefix + '/');
+}
+
+function SidebarNav({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
+  return (
+    <nav className="flex flex-1 flex-col gap-0.5 px-3">
+      {NAV.map((item) => {
+        const active = isActive(pathname, item.matchPrefix, item.label);
+        return (
+          <Link
+            key={item.label}
+            href={item.href}
+            onClick={onNavigate}
+            className={`capri-nav-link ${active ? 'active' : ''}`}
+          >
+            <CapriIcon name={item.icon} filled={active} size={20} />
+            {item.label}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
+function BrandBlock() {
+  return (
+    <div className="capri-brand-mark px-4 py-5 border-b border-[var(--capri-outline-variant)]">
+      <div className="capri-brand-icon">CG</div>
+      <div>
+        <div className="capri-brand-title">{CAPRI_BRAND.name}</div>
+        <div className="capri-brand-sub">{CAPRI_BRAND.tagline}</div>
+      </div>
+    </div>
+  );
 }
 
 export function CapriShell({
@@ -37,153 +73,113 @@ export function CapriShell({
 }) {
   const pathname = usePathname();
   const { toast, clearToast } = useCapriDemo();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="capri-app flex min-h-screen">
+      {/* Desktop sidebar */}
       <aside
-        className="fixed left-0 top-0 z-40 hidden h-screen flex-col border-r md:flex"
-        style={{
-          width: 'var(--capri-sidebar-width)',
-          background: 'var(--capri-surface-low)',
-          borderColor: 'var(--capri-outline-variant)',
-        }}
+        className="fixed left-0 top-0 z-40 hidden h-screen w-[260px] flex-col border-r border-[var(--capri-outline-variant)] bg-[var(--capri-surface-low)] md:flex"
+        style={{ width: 'var(--capri-sidebar-width)' }}
       >
-        <div className="px-4 py-5">
-          <h2 className="text-lg font-semibold" style={{ color: 'var(--capri-primary)' }}>
-            Capri WhatsApp Demo
-          </h2>
-          <p className="text-xs" style={{ color: 'var(--capri-on-surface-variant)' }}>
-            Institutional AI
-          </p>
-        </div>
-
-        <nav className="flex flex-1 flex-col gap-1 px-3">
-          {NAV.filter((n) => n.section === 'main').map((item) => {
-            const active = isActive(pathname, item.matchPrefix);
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all"
-                style={{
-                  background: active ? 'var(--capri-secondary-container)' : 'transparent',
-                  color: active ? 'var(--capri-on-secondary-container)' : 'var(--capri-on-surface-variant)',
-                  transform: active ? 'translateX(4px)' : undefined,
-                }}
-              >
-                <CapriIcon name={item.icon} filled={active} size={20} />
-                <span className="text-xs uppercase tracking-wider">{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="border-t px-3 py-4" style={{ borderColor: 'var(--capri-outline-variant)' }}>
-          <Link
-            href="/capri/leads/new"
-            className="capri-btn-primary mb-3 flex w-full justify-center py-2.5 text-sm"
-          >
+        <BrandBlock />
+        <SidebarNav pathname={pathname} />
+        <div className="mt-auto border-t border-[var(--capri-outline-variant)] px-3 py-4">
+          <Link href="/capri/leads/new" className="capri-btn-primary mb-3 flex w-full py-2.5 text-sm">
             <CapriIcon name="add" size={18} />
             Add New Lead
           </Link>
-          <Link
-            href="/classic"
-            className="mb-2 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-black/5"
-            style={{ color: 'var(--capri-on-surface-variant)' }}
-          >
+          <Link href="/classic" className="capri-nav-link mb-1">
             <CapriIcon name="sensors" size={20} />
-            <span className="text-xs font-semibold uppercase tracking-wider">Live API Sessions</span>
+            Live API Sessions
           </Link>
-          <button
-            type="button"
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm"
-            style={{ color: 'var(--capri-on-surface-variant)' }}
-          >
+          <button type="button" className="capri-nav-link w-full border-none bg-transparent">
             <CapriIcon name="help" size={20} />
-            <span className="text-xs font-semibold uppercase tracking-wider">Support</span>
+            Support
           </button>
         </div>
       </aside>
 
-      <div
-        className="flex min-h-screen flex-1 flex-col"
-        style={{ marginLeft: 'var(--capri-sidebar-width)' }}
-      >
-        <header
-          className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b px-6"
-          style={{
-            background: 'var(--capri-surface)',
-            borderColor: 'var(--capri-outline-variant)',
-          }}
-        >
-          <div className="flex min-w-0 flex-1 items-center gap-4">
+      {/* Mobile drawer */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Close menu"
+          />
+          <aside className="relative flex h-full w-[280px] flex-col bg-[var(--capri-surface)] shadow-2xl">
+            <BrandBlock />
+            <SidebarNav pathname={pathname} onNavigate={() => setMobileOpen(false)} />
+          </aside>
+        </div>
+      )}
+
+      <div className="capri-main-offset">
+        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-4 border-b border-[var(--capri-outline-variant)] bg-[var(--capri-surface)] px-4 shadow-sm md:px-6">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            <button
+              type="button"
+              className="rounded-lg p-2 md:hidden"
+              onClick={() => setMobileOpen(true)}
+              aria-label="Open menu"
+            >
+              <CapriIcon name="menu" size={24} />
+            </button>
+
             {breadcrumbs ? (
-              <nav className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--capri-on-surface-variant)' }}>
+              <nav className="hidden items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[var(--capri-on-surface-variant)] sm:flex">
                 {breadcrumbs.map((b, i) => (
                   <span key={b.label} className="flex items-center gap-2">
-                    {i > 0 && <CapriIcon name="chevron_right" size={16} />}
+                    {i > 0 && <CapriIcon name="chevron_right" size={14} />}
                     {b.href ? (
-                      <Link href={b.href} className="hover:underline" style={{ color: i === breadcrumbs.length - 1 ? 'var(--capri-primary)' : undefined }}>
+                      <Link
+                        href={b.href}
+                        className={i === breadcrumbs.length - 1 ? 'text-[var(--capri-primary)]' : 'hover:text-[var(--capri-primary)]'}
+                      >
                         {b.label}
                       </Link>
                     ) : (
-                      <span style={{ color: 'var(--capri-primary)' }}>{b.label}</span>
+                      <span className="text-[var(--capri-primary)]">{b.label}</span>
                     )}
                   </span>
                 ))}
               </nav>
             ) : title ? (
-              <h1 className="text-lg font-bold" style={{ color: 'var(--capri-primary)' }}>
-                {title}
-              </h1>
+              <h1 className="text-base font-bold text-[var(--capri-primary)] md:text-lg">{title}</h1>
             ) : (
-              <div
-                className="flex max-w-md flex-1 items-center gap-2 rounded-full border px-3 py-1.5"
-                style={{ background: 'var(--capri-surface-low)', borderColor: 'var(--capri-outline-variant)' }}
-              >
-                <CapriIcon name="search" size={18} className="opacity-60" />
+              <div className="flex max-w-lg flex-1 items-center gap-2 rounded-full border border-[var(--capri-outline-variant)] bg-[var(--capri-surface-low)] px-4 py-2">
+                <CapriIcon name="search" size={18} className="text-[var(--capri-on-surface-variant)]" />
                 <input
-                  className="flex-1 border-none bg-transparent text-sm outline-none"
+                  className="min-w-0 flex-1 border-none bg-transparent text-sm outline-none placeholder:text-[var(--capri-on-surface-variant)]"
                   placeholder={searchPlaceholder}
-                  style={{ color: 'var(--capri-on-surface)' }}
                 />
               </div>
             )}
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="hidden text-sm font-medium sm:block" style={{ color: 'var(--capri-on-surface-variant)' }}>
+          <div className="flex shrink-0 items-center gap-2 md:gap-4">
+            <span className="hidden text-xs font-semibold text-[var(--capri-on-surface-variant)] lg:block">
               {CAPRI_TENANT}
             </span>
-            <button type="button" className="relative rounded-full p-2 hover:bg-black/5">
+            <button type="button" className="relative rounded-full p-2 transition-colors hover:bg-[var(--capri-surface-low)]">
               <CapriIcon name="notifications" size={22} />
-              <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
+              <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
             </button>
-            <button type="button" className="rounded-full p-2 hover:bg-black/5">
-              <CapriIcon name="help" size={22} />
-            </button>
-            <div
-              className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold"
-              style={{ background: 'var(--capri-secondary-container)', color: 'var(--capri-on-secondary-container)' }}
-            >
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[var(--capri-primary-light)] to-[var(--capri-primary)] text-xs font-bold text-white shadow-md">
               AD
             </div>
           </div>
         </header>
 
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
       </div>
 
       {toast && (
-        <div className="fixed bottom-8 right-8 z-[100] capri-toast">
-          <div
-            className="flex min-w-[320px] items-center gap-4 rounded-xl px-6 py-4 shadow-2xl"
-            style={{ background: '#171d1c', color: '#fff' }}
-          >
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-full"
-              style={{ background: 'var(--capri-whatsapp)' }}
-            >
+        <div className="fixed bottom-6 right-4 z-[100] capri-toast md:bottom-8 md:right-8">
+          <div className="flex min-w-[280px] max-w-[360px] items-center gap-3 rounded-2xl bg-[#0f1a18] px-5 py-4 text-white shadow-2xl md:min-w-[320px] md:gap-4 md:px-6">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--capri-whatsapp)]">
               <CapriIcon name="check_circle" filled size={22} className="text-white" />
             </div>
             <p className="flex-1 text-sm font-semibold">{toast}</p>
@@ -207,20 +203,12 @@ export function CapriWaTabs({ active }: { active: 'overview' | 'templates' | 'lo
   ] as const;
 
   return (
-    <div
-      className="mb-6 flex flex-wrap gap-1 border-b pb-0"
-      style={{ borderColor: 'var(--capri-outline-variant)' }}
-    >
+    <div className="capri-wa-tabs">
       {tabs.map((tab) => (
         <Link
           key={tab.key}
           href={tab.href}
-          className="relative px-4 py-2.5 text-sm font-semibold transition-colors"
-          style={{
-            color: active === tab.key ? 'var(--capri-primary)' : 'var(--capri-on-surface-variant)',
-            borderBottom: active === tab.key ? '2px solid var(--capri-primary)' : '2px solid transparent',
-            marginBottom: '-1px',
-          }}
+          className={`capri-wa-tab ${active === tab.key ? 'active' : ''}`}
         >
           {tab.label}
         </Link>

@@ -8,8 +8,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Capri WhatsApp Demo | FinReach AI',
-  description: 'NBFC WhatsApp qualification, callback capture, and lead management demo',
+  title: 'Capri Global — WhatsApp AI Demo',
+  description: 'Capri Global NBFC WhatsApp qualification, callback capture, and lead management',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

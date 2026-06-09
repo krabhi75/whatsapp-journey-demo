@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
-import '@/styles/capri.css';
 import { CapriDemoProvider } from '@/components/capri/capri-demo-context';
 
 export const metadata: Metadata = {
-  title: 'Capri WhatsApp Demo | FinReach AI',
-  description: 'NBFC WhatsApp qualification, callback capture, and lead management demo',
+  title: 'Capri Global — WhatsApp AI Demo',
+  description: 'Capri Global NBFC WhatsApp qualification, callback capture, and lead management',
 };
 
 export default function CapriLayout({ children }: { children: React.ReactNode }) {

@@ -28,31 +28,25 @@ export function CapriWhatsAppOverview() {
 
   return (
     <CapriShell searchPlaceholder="Search across communications...">
-      <div className="mb-2 text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--capri-on-surface-variant)' }}>
+      <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--capri-on-surface-variant)]">
         Mission Control
-      </div>
+      </p>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight">WhatsApp Overview</h2>
-          <p className="text-sm" style={{ color: 'var(--capri-on-surface-variant)' }}>
+          <h2 className="text-2xl font-bold tracking-tight text-[var(--capri-on-surface)] md:text-3xl">
+            WhatsApp Overview
+          </h2>
+          <p className="mt-1 text-sm text-[var(--capri-on-surface-variant)]">
             Real-time KPIs, funnel, and delivery health
           </p>
         </div>
-        <div
-          className="flex rounded-lg p-1"
-          style={{ background: 'var(--capri-surface-container-high)' }}
-        >
+        <div className="capri-period-toggle">
           {(['today', '7d', '30d'] as const).map((p) => (
             <button
               key={p}
               type="button"
               onClick={() => setPeriod(p)}
-              className="rounded-md px-4 py-1.5 text-sm font-semibold capitalize"
-              style={{
-                background: period === p ? 'var(--capri-surface-lowest)' : 'transparent',
-                color: period === p ? 'var(--capri-primary)' : 'var(--capri-on-surface-variant)',
-                boxShadow: period === p ? '0 1px 3px rgba(0,0,0,0.08)' : undefined,
-              }}
+              className={`capri-period-btn ${period === p ? 'active' : ''}`}
             >
               {p === '7d' ? '7d' : p === '30d' ? '30d' : 'Today'}
             </button>
@@ -62,37 +56,22 @@ export function CapriWhatsAppOverview() {
 
       <CapriWaTabs active="overview" />
 
-      <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-5">
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
         {KPIS.map((kpi) => (
-          <div key={kpi.label} className="capri-card p-5">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--capri-on-surface-variant)' }}>
+          <div key={kpi.label} className="capri-card capri-card-kpi p-4 sm:p-5">
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-[var(--capri-on-surface-variant)]">
               {kpi.label}
             </p>
-            <div className="flex items-end justify-between">
+            <div className="flex items-end justify-between gap-2">
               <div>
-                <p className="text-3xl font-bold tracking-tight">{kpi.value}</p>
-                {kpi.sub && (
-                  <p className="text-xs" style={{ color: 'var(--capri-on-surface-variant)' }}>
-                    {kpi.sub}
-                  </p>
-                )}
-                {kpi.trend && (
-                  <p className="text-xs font-semibold text-emerald-600">{kpi.trend}</p>
-                )}
-                {kpi.hot && (
-                  <span className="capri-pill mt-1" style={{ background: '#d97706', color: '#fff' }}>
-                    Hot
-                  </span>
-                )}
+                <p className="text-2xl font-bold tracking-tight sm:text-3xl">{kpi.value}</p>
+                {kpi.sub && <p className="text-xs text-[var(--capri-on-surface-variant)]">{kpi.sub}</p>}
+                {kpi.trend && <p className="text-xs font-semibold text-emerald-600">{kpi.trend}</p>}
+                {kpi.hot && <span className="capri-pill capri-pill-warm mt-1">Hot</span>}
               </div>
               {kpi.spark && (
-                <svg width="48" height="24" viewBox="0 0 48 24" className="opacity-40">
-                  <polyline
-                    fill="none"
-                    stroke="var(--capri-primary)"
-                    strokeWidth="2"
-                    points="0,20 12,14 24,16 36,8 48,4"
-                  />
+                <svg width="40" height="20" viewBox="0 0 48 24" className="shrink-0 opacity-30">
+                  <polyline fill="none" stroke="var(--capri-primary)" strokeWidth="2" points="0,20 12,14 24,16 36,8 48,4" />
                 </svg>
               )}
             </div>
@@ -100,66 +79,58 @@ export function CapriWhatsAppOverview() {
         ))}
       </div>
 
-      <div className="mb-6 grid gap-6 lg:grid-cols-2">
-        <div className="capri-card p-6">
+      <div className="mb-6 grid gap-4 lg:grid-cols-2 lg:gap-6">
+        <div className="capri-card p-5 sm:p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--capri-on-surface-variant)' }}>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--capri-on-surface-variant)]">
               Connection Health
             </h3>
-            <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <span className="capri-pill capri-pill-live">
+              <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
               Live
             </span>
           </div>
           <div className="space-y-3">
             {[
-              { icon: 'cloud_done', title: 'Meta Cloud API', sub: 'Connected & Authenticated', ok: true },
-              { icon: 'business', title: 'WABA Account', sub: 'SwiftCredit Business · +91 98XXX XXXXX', ok: true },
-              { icon: 'webhook', title: 'Webhook Status', sub: 'Active · Last event 2m ago', ok: true },
+              { icon: 'cloud_done', title: 'Meta Cloud API', sub: 'Connected & Authenticated' },
+              { icon: 'business', title: 'WABA Account', sub: 'Capri Global Business · +91 98XXX XXXXX' },
+              { icon: 'webhook', title: 'Webhook Status', sub: 'Active · Last event 2m ago' },
             ].map((row) => (
-              <div
-                key={row.title}
-                className="flex items-center gap-3 rounded-lg border p-3"
-                style={{ borderColor: 'var(--capri-outline-variant)', background: 'var(--capri-surface-low)' }}
-              >
+              <div key={row.title} className="capri-health-row">
                 <CapriIcon name={row.icon} size={22} className="text-[var(--capri-primary)]" />
-                <div className="flex-1">
+                <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold">{row.title}</p>
-                  <p className="text-xs" style={{ color: 'var(--capri-on-surface-variant)' }}>
-                    {row.sub}
-                  </p>
+                  <p className="truncate text-xs text-[var(--capri-on-surface-variant)]">{row.sub}</p>
                 </div>
-                {row.ok && <CapriIcon name="check_circle" filled size={20} className="text-emerald-600" />}
+                <CapriIcon name="check_circle" filled size={20} className="shrink-0 text-emerald-600" />
               </div>
             ))}
           </div>
-          <Link href="/capri/whatsapp/settings" className="mt-4 inline-flex text-sm font-semibold" style={{ color: 'var(--capri-primary)' }}>
+          <Link href="/capri/whatsapp/settings" className="mt-4 inline-flex text-sm font-semibold text-[var(--capri-primary)] hover:underline">
             Open Settings →
           </Link>
         </div>
 
-        <div className="capri-card p-6">
+        <div className="capri-card p-5 sm:p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--capri-on-surface-variant)' }}>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--capri-on-surface-variant)]">
               Qualification Funnel
             </h3>
-            <button type="button" className="text-xs font-semibold" style={{ color: 'var(--capri-primary)' }}>
+            <button type="button" className="text-xs font-semibold text-[var(--capri-primary)] hover:underline">
               Download Report
             </button>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {FUNNEL.map((stage, i) => (
               <div key={stage.label} className="flex items-center gap-2">
-                <div className="text-center">
-                  <p className="text-lg font-bold" style={{ color: 'var(--capri-primary)' }}>
-                    {stage.value}
-                  </p>
-                  <p className="text-[10px] font-semibold uppercase" style={{ color: 'var(--capri-on-surface-variant)' }}>
+                <div className="capri-funnel-step min-w-[72px]">
+                  <p className="text-lg font-bold text-[var(--capri-primary)]">{stage.value}</p>
+                  <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--capri-on-surface-variant)]">
                     {stage.label}
                   </p>
                 </div>
                 {i < FUNNEL.length - 1 && (
-                  <CapriIcon name="arrow_forward" size={16} className="opacity-30" />
+                  <CapriIcon name="arrow_forward" size={16} className="capri-funnel-arrow hidden sm:block" />
                 )}
               </div>
             ))}
@@ -168,11 +139,11 @@ export function CapriWhatsAppOverview() {
       </div>
 
       <div className="capri-card overflow-hidden">
-        <div className="flex items-center justify-between border-b px-5 py-4" style={{ borderColor: 'var(--capri-outline-variant)' }}>
-          <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--capri-on-surface-variant)' }}>
+        <div className="flex items-center justify-between border-b border-[var(--capri-outline-variant)] px-5 py-4">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--capri-on-surface-variant)]">
             Recent Message Activity
           </h3>
-          <Link href="/capri/whatsapp/logs" className="flex items-center gap-1 text-sm font-semibold" style={{ color: 'var(--capri-primary)' }}>
+          <Link href="/capri/whatsapp/logs" className="flex items-center gap-1 text-sm font-semibold text-[var(--capri-primary)] hover:underline">
             View All Logs
             <CapriIcon name="arrow_forward" size={16} />
           </Link>
@@ -194,7 +165,7 @@ export function CapriWhatsAppOverview() {
                 <tr key={log.id}>
                   <td className="whitespace-nowrap text-xs">{log.timestamp}</td>
                   <td>
-                    <Link href={`/capri/leads/${log.leadId}`} className="font-semibold hover:underline" style={{ color: 'var(--capri-primary)' }}>
+                    <Link href={`/capri/leads/${log.leadId}`} className="font-semibold text-[var(--capri-primary)] hover:underline">
                       {log.leadName}
                     </Link>
                   </td>
@@ -204,9 +175,9 @@ export function CapriWhatsAppOverview() {
                     </span>
                   </td>
                   <td className="font-mono text-xs">{log.template ?? '—'}</td>
-                  <td className="max-w-xs truncate text-xs">{log.message}</td>
+                  <td className="max-w-[200px] truncate text-xs lg:max-w-xs">{log.message}</td>
                   <td>
-                    <span className="flex items-center gap-1 text-xs font-semibold" style={{ color: log.status === 'READ' ? '#3b82f6' : 'var(--capri-on-surface-variant)' }}>
+                    <span className={`flex items-center gap-1 text-xs font-semibold ${log.status === 'READ' ? 'text-blue-600' : 'text-[var(--capri-on-surface-variant)]'}`}>
                       <CapriIcon name="done_all" filled={log.status === 'READ'} size={16} />
                       {log.status}
                     </span>

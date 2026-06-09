@@ -1,73 +1,129 @@
-/* Capri WhatsApp Demo — FinReach design tokens from Google Stitch */
+/* Capri Global — Premium FinReach / Stitch design system */
 
 .capri-app {
-  --capri-bg: #f5faf8;
-  --capri-surface: #f5faf8;
-  --capri-surface-low: #f0f5f2;
+  --capri-bg: #f4f7f6;
+  --capri-surface: #ffffff;
+  --capri-surface-low: #f0f5f3;
   --capri-surface-lowest: #ffffff;
   --capri-surface-container: #eaefed;
-  --capri-surface-container-high: #e4e9e7;
-  --capri-surface-container-highest: #dee4e1;
-  --capri-on-surface: #171d1c;
-  --capri-on-surface-variant: #3d4947;
-  --capri-outline: #6d7a77;
-  --capri-outline-variant: #bcc9c6;
-  --capri-primary: #00685f;
-  --capri-primary-container: #008378;
+  --capri-surface-container-high: #e8eeec;
+  --capri-on-surface: #0f1a18;
+  --capri-on-surface-variant: #4a5c58;
+  --capri-outline-variant: #c5d4d0;
+  --capri-primary: #005a52;
+  --capri-primary-light: #00796a;
+  --capri-primary-container: #006b62;
   --capri-on-primary: #ffffff;
-  --capri-on-primary-container: #f4fffc;
-  --capri-secondary: #545f73;
-  --capri-secondary-container: #d5e0f8;
-  --capri-on-secondary-container: #586377;
-  --capri-tertiary: #924628;
-  --capri-error: #ba1a1a;
+  --capri-gold: #b8860b;
+  --capri-gold-soft: #fef9e7;
+  --capri-secondary: #3d4f6f;
+  --capri-secondary-container: #dce8f8;
+  --capri-on-secondary-container: #2c3e5c;
+  --capri-tertiary: #9a3412;
   --capri-whatsapp: #25d366;
   --capri-sidebar-width: 260px;
   --capri-topbar-height: 64px;
-  --capri-gutter: 24px;
-  font-family: var(--font-inter), Inter, sans-serif;
+  --capri-shadow-sm: 0 1px 2px rgba(15, 26, 24, 0.06);
+  --capri-shadow-md: 0 4px 16px rgba(15, 26, 24, 0.08);
+  --capri-shadow-lg: 0 12px 40px rgba(15, 26, 24, 0.1);
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
   background: var(--capri-bg);
   color: var(--capri-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+.capri-app * {
+  box-sizing: border-box;
 }
 
 .capri-app .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   vertical-align: middle;
   line-height: 1;
+  user-select: none;
 }
 
 .capri-app .material-symbols-outlined.filled {
   font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
+/* Brand mark */
+.capri-brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.capri-brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--capri-primary) 0%, var(--capri-primary-light) 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+  box-shadow: 0 4px 12px rgba(0, 90, 82, 0.35);
+}
+
+.capri-brand-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--capri-primary);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.capri-brand-sub {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--capri-gold);
+}
+
+/* Cards */
 .capri-card {
   background: var(--capri-surface-lowest);
   border: 1px solid var(--capri-outline-variant);
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-radius: 14px;
+  box-shadow: var(--capri-shadow-sm);
+  transition: box-shadow 0.2s ease;
 }
 
+.capri-card:hover {
+  box-shadow: var(--capri-shadow-md);
+}
+
+.capri-card-kpi {
+  background: linear-gradient(180deg, #ffffff 0%, #fafcfb 100%);
+}
+
+/* Buttons */
 .capri-btn-primary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
-  border-radius: 8px;
-  background: var(--capri-primary);
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--capri-primary-light) 0%, var(--capri-primary) 100%);
   color: var(--capri-on-primary);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   border: none;
   cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 90, 82, 0.3);
   transition: transform 0.15s, box-shadow 0.15s;
 }
 
 .capri-btn-primary:hover {
-  box-shadow: 0 4px 12px rgba(0, 104, 95, 0.25);
-}
-
-.capri-btn-primary:active {
-  transform: scale(0.98);
+  box-shadow: 0 6px 20px rgba(0, 90, 82, 0.35);
+  transform: translateY(-1px);
 }
 
 .capri-btn-outline {
@@ -75,17 +131,21 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
-  border-radius: 8px;
-  background: transparent;
+  border-radius: 10px;
+  background: var(--capri-surface);
   color: var(--capri-on-surface-variant);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   border: 1px solid var(--capri-outline-variant);
   cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .capri-btn-outline:hover {
-  background: var(--capri-surface-container-high);
+  background: var(--capri-surface-low);
+  border-color: var(--capri-primary-light);
+  color: var(--capri-primary);
 }
 
 .capri-btn-wa {
@@ -100,75 +160,87 @@
   font-weight: 600;
   border: none;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
 }
 
+/* Nav */
+.capri-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--capri-on-surface-variant);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.capri-nav-link:hover {
+  background: rgba(0, 90, 82, 0.06);
+  color: var(--capri-primary);
+}
+
+.capri-nav-link.active {
+  background: var(--capri-secondary-container);
+  color: var(--capri-on-secondary-container);
+  box-shadow: inset 3px 0 0 var(--capri-primary);
+}
+
+/* Pills */
 .capri-pill {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  padding: 0.125rem 0.5rem;
+  padding: 0.2rem 0.55rem;
   border-radius: 9999px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
-.capri-pill-hot {
-  background: var(--capri-tertiary);
-  color: #fff;
-}
-
-.capri-pill-warm {
-  background: #d97706;
-  color: #fff;
-}
-
-.capri-pill-cold {
-  background: var(--capri-secondary);
-  color: #fff;
-}
-
+.capri-pill-hot { background: linear-gradient(135deg, #c2410c, #9a3412); color: #fff; }
+.capri-pill-warm { background: #d97706; color: #fff; }
+.capri-pill-cold { background: var(--capri-secondary); color: #fff; }
 .capri-pill-status {
   background: var(--capri-secondary-container);
   color: var(--capri-on-secondary-container);
-  border: 1px solid rgba(88, 99, 119, 0.1);
+}
+.capri-pill-inbound { background: #f1f5f4; color: var(--capri-on-surface-variant); }
+.capri-pill-outbound { background: rgba(0, 90, 82, 0.1); color: var(--capri-primary); }
+.capri-pill-live {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
 }
 
-.capri-pill-inbound {
-  background: var(--capri-surface-container);
-  color: var(--capri-on-surface-variant);
-}
-
-.capri-pill-outbound {
-  background: rgba(0, 104, 95, 0.1);
-  color: var(--capri-primary);
-}
-
+/* Form */
 .capri-input {
   width: 100%;
   height: 2.75rem;
   padding: 0 1rem;
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid var(--capri-outline-variant);
-  background: var(--capri-bg);
+  background: var(--capri-surface);
   font-size: 14px;
   color: var(--capri-on-surface);
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .capri-input:focus {
-  border-color: var(--capri-primary);
-  box-shadow: 0 0 0 2px rgba(0, 104, 95, 0.12);
+  border-color: var(--capri-primary-light);
+  box-shadow: 0 0 0 3px rgba(0, 121, 106, 0.12);
 }
 
-.capri-select {
-  appearance: none;
-  cursor: pointer;
-}
+.capri-select { appearance: none; cursor: pointer; }
 
+/* Table */
 .capri-table {
   width: 100%;
   border-collapse: collapse;
@@ -177,58 +249,137 @@
 
 .capri-table th {
   text-align: left;
-  padding: 0.75rem 1rem;
-  font-size: 11px;
-  font-weight: 600;
+  padding: 0.875rem 1.25rem;
+  font-size: 10px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: var(--capri-on-surface-variant);
   border-bottom: 1px solid var(--capri-outline-variant);
   background: var(--capri-surface-low);
 }
 
 .capri-table td {
-  padding: 0.875rem 1rem;
-  border-bottom: 1px solid var(--capri-outline-variant);
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(197, 212, 208, 0.5);
   vertical-align: middle;
 }
 
 .capri-table tbody tr:hover {
-  background: rgba(0, 104, 95, 0.02);
+  background: rgba(0, 90, 82, 0.03);
 }
 
-.capri-table tbody tr {
-  cursor: pointer;
-}
+.capri-table tbody tr { cursor: pointer; }
 
-.capri-wa-bubble-in {
-  border-bottom-left-radius: 2px !important;
-}
+/* WhatsApp bubbles */
+.capri-wa-bubble-in { border-bottom-left-radius: 4px !important; }
+.capri-wa-bubble-out { border-bottom-right-radius: 4px !important; }
 
-.capri-wa-bubble-out {
-  border-bottom-right-radius: 2px !important;
-}
-
-.capri-scroll::-webkit-scrollbar {
-  width: 6px;
-}
-
+.capri-scroll::-webkit-scrollbar { width: 6px; }
 .capri-scroll::-webkit-scrollbar-thumb {
   background: var(--capri-outline-variant);
   border-radius: 10px;
 }
 
-@keyframes capri-toast-in {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+/* Funnel bar */
+.capri-funnel-step {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  padding: 1rem 0.5rem;
+  border-radius: 10px;
+  background: var(--capri-surface-low);
+  border: 1px solid var(--capri-outline-variant);
 }
 
-.capri-toast {
-  animation: capri-toast-in 0.4s ease-out forwards;
+.capri-funnel-arrow {
+  color: var(--capri-outline-variant);
+  flex-shrink: 0;
+}
+
+/* Health row */
+.capri-health-row {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--capri-outline-variant);
+  background: var(--capri-surface-low);
+}
+
+/* Period toggle */
+.capri-period-toggle {
+  display: flex;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--capri-surface-container-high);
+  border: 1px solid var(--capri-outline-variant);
+}
+
+.capri-period-btn {
+  padding: 0.375rem 1rem;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--capri-on-surface-variant);
+  transition: all 0.15s;
+}
+
+.capri-period-btn.active {
+  background: var(--capri-surface);
+  color: var(--capri-primary);
+  box-shadow: var(--capri-shadow-sm);
+}
+
+/* Tabs */
+.capri-wa-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-bottom: 1px solid var(--capri-outline-variant);
+  margin-bottom: 1.5rem;
+}
+
+.capri-wa-tab {
+  padding: 0.75rem 1.25rem;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--capri-on-surface-variant);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.capri-wa-tab:hover { color: var(--capri-primary); }
+.capri-wa-tab.active {
+  color: var(--capri-primary);
+  border-bottom-color: var(--capri-primary);
+}
+
+@keyframes capri-toast-in {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.capri-toast { animation: capri-toast-in 0.4s ease-out forwards; }
+
+/* Main layout offset */
+.capri-main-offset {
+  margin-left: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .capri-main-offset {
+    margin-left: var(--capri-sidebar-width);
+  }
 }

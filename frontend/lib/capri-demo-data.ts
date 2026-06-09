@@ -72,7 +72,13 @@ export interface CapriMessageLog {
   timestamp: string;
 }
 
-export const CAPRI_TENANT = 'SwiftCredit Finance';
+export const CAPRI_TENANT = 'Capri Global Finance';
+
+export const CAPRI_BRAND = {
+  name: 'Capri WhatsApp Demo',
+  tagline: 'Institutional AI · NBFC',
+  legal: 'Capri Global Capital Ltd',
+};
 
 export const SEED_LEADS: CapriLead[] = [
   {
