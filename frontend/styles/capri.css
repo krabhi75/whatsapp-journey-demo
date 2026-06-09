@@ -1,0 +1,234 @@
+/* Capri WhatsApp Demo — FinReach design tokens from Google Stitch */
+
+.capri-app {
+  --capri-bg: #f5faf8;
+  --capri-surface: #f5faf8;
+  --capri-surface-low: #f0f5f2;
+  --capri-surface-lowest: #ffffff;
+  --capri-surface-container: #eaefed;
+  --capri-surface-container-high: #e4e9e7;
+  --capri-surface-container-highest: #dee4e1;
+  --capri-on-surface: #171d1c;
+  --capri-on-surface-variant: #3d4947;
+  --capri-outline: #6d7a77;
+  --capri-outline-variant: #bcc9c6;
+  --capri-primary: #00685f;
+  --capri-primary-container: #008378;
+  --capri-on-primary: #ffffff;
+  --capri-on-primary-container: #f4fffc;
+  --capri-secondary: #545f73;
+  --capri-secondary-container: #d5e0f8;
+  --capri-on-secondary-container: #586377;
+  --capri-tertiary: #924628;
+  --capri-error: #ba1a1a;
+  --capri-whatsapp: #25d366;
+  --capri-sidebar-width: 260px;
+  --capri-topbar-height: 64px;
+  --capri-gutter: 24px;
+  font-family: var(--font-inter), Inter, sans-serif;
+  background: var(--capri-bg);
+  color: var(--capri-on-surface);
+}
+
+.capri-app .material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.capri-app .material-symbols-outlined.filled {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.capri-card {
+  background: var(--capri-surface-lowest);
+  border: 1px solid var(--capri-outline-variant);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.capri-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  background: var(--capri-primary);
+  color: var(--capri-on-primary);
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.capri-btn-primary:hover {
+  box-shadow: 0 4px 12px rgba(0, 104, 95, 0.25);
+}
+
+.capri-btn-primary:active {
+  transform: scale(0.98);
+}
+
+.capri-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--capri-on-surface-variant);
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid var(--capri-outline-variant);
+  cursor: pointer;
+}
+
+.capri-btn-outline:hover {
+  background: var(--capri-surface-container-high);
+}
+
+.capri-btn-wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  background: var(--capri-whatsapp);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+}
+
+.capri-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.capri-pill-hot {
+  background: var(--capri-tertiary);
+  color: #fff;
+}
+
+.capri-pill-warm {
+  background: #d97706;
+  color: #fff;
+}
+
+.capri-pill-cold {
+  background: var(--capri-secondary);
+  color: #fff;
+}
+
+.capri-pill-status {
+  background: var(--capri-secondary-container);
+  color: var(--capri-on-secondary-container);
+  border: 1px solid rgba(88, 99, 119, 0.1);
+}
+
+.capri-pill-inbound {
+  background: var(--capri-surface-container);
+  color: var(--capri-on-surface-variant);
+}
+
+.capri-pill-outbound {
+  background: rgba(0, 104, 95, 0.1);
+  color: var(--capri-primary);
+}
+
+.capri-input {
+  width: 100%;
+  height: 2.75rem;
+  padding: 0 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--capri-outline-variant);
+  background: var(--capri-bg);
+  font-size: 14px;
+  color: var(--capri-on-surface);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.capri-input:focus {
+  border-color: var(--capri-primary);
+  box-shadow: 0 0 0 2px rgba(0, 104, 95, 0.12);
+}
+
+.capri-select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.capri-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.capri-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--capri-on-surface-variant);
+  border-bottom: 1px solid var(--capri-outline-variant);
+  background: var(--capri-surface-low);
+}
+
+.capri-table td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--capri-outline-variant);
+  vertical-align: middle;
+}
+
+.capri-table tbody tr:hover {
+  background: rgba(0, 104, 95, 0.02);
+}
+
+.capri-table tbody tr {
+  cursor: pointer;
+}
+
+.capri-wa-bubble-in {
+  border-bottom-left-radius: 2px !important;
+}
+
+.capri-wa-bubble-out {
+  border-bottom-right-radius: 2px !important;
+}
+
+.capri-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.capri-scroll::-webkit-scrollbar-thumb {
+  background: var(--capri-outline-variant);
+  border-radius: 10px;
+}
+
+@keyframes capri-toast-in {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.capri-toast {
+  animation: capri-toast-in 0.4s ease-out forwards;
+}

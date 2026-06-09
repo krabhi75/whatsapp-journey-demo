@@ -5,7 +5,7 @@ Standalone NBFC customer service WhatsApp journey. **No property / realty CRM de
 Supports **multiple office phones** for testing (`WHATSAPP_SAFE_MODE=false`).
 
 - **Backend (Render):** Webhook + journey logic
-- **Frontend (Vercel):** Live demo dashboard
+- **Frontend (Vercel):** Stitch-designed Capri CRM UI (`/capri`) + live API dashboard (`/classic`)
 
 ## Why localtunnel failed
 
@@ -77,6 +77,12 @@ curl "https://YOUR-RENDER-APP.onrender.com/webhooks/whatsapp?hub.mode=subscribe&
 2. **Root directory:** `frontend`
 3. **Env:** `NEXT_PUBLIC_API_URL=https://YOUR-RENDER-APP.onrender.com`
 4. Deploy
+
+**Routes after deploy:**
+- `https://YOUR-APP.vercel.app/` → WhatsApp Overview (Stitch UI)
+- `/capri/leads` → Lead management
+- `/capri/leads/priya-nair` → WhatsApp thread + callback demo
+- `/classic` → Live sessions from Render API
 
 ---
 
