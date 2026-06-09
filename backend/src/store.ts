@@ -13,7 +13,7 @@ export interface Lead {
   name: string;
   step: QualStep;
   answers: LeadAnswers;
-  score?: ScoreResult;
+  score?: ScoreResult & { priority?: string };
   messages: Message[];
   createdAt: string;
   updatedAt: string;
@@ -40,7 +40,7 @@ export function createLead(phone: string, name: string): Lead {
     id: `lead_${key}`,
     phone: key,
     name,
-    step: 'PROPERTY_TYPE',
+    step: 'SERVICE_TYPE',
     answers: {},
     messages: [],
     createdAt: now,

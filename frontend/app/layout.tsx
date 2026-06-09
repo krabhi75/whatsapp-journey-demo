@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'WhatsApp Journey Demo',
-  description: '5-question WhatsApp qualification flow demonstration',
+  title: 'NBFC WhatsApp Customer Service Demo',
+  description: 'NBFC customer service WhatsApp journey — multi-phone office testing',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

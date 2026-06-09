@@ -50,10 +50,15 @@ async function handleWebhookPost(req: express.Request, res: express.Response): P
 }
 
 app.get('/health', (_req, res) => {
+  const allowedPhones = env.WHATSAPP_ALLOWED_PHONES.split(',').map((p) => p.trim()).filter(Boolean);
   res.json({
     ok: true,
     service: 'whatsapp-journey-demo',
+    journey: 'NBFC Customer Service',
+    brand: env.NBFC_BRAND_NAME,
     whatsappLive: isWhatsAppLive,
+    safeMode: env.WHATSAPP_SAFE_MODE,
+    allowedPhones: env.WHATSAPP_SAFE_MODE ? allowedPhones : 'all (safe mode off)',
     webhookUrl: `${env.APP_URL}/webhooks/whatsapp`,
     verifyToken: env.WEBHOOK_VERIFY_TOKEN,
   });

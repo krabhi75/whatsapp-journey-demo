@@ -7,8 +7,9 @@ import {
 } from './qualification';
 import { addMessage, createLead, findLead, updateLead } from './store';
 import { sendWhatsAppMessage } from './whatsapp';
+import { env } from './config';
 
-const GREETINGS = ['hi', 'hello', 'hey', 'hii', 'namaste', 'good morning', 'good evening'];
+const GREETINGS = ['hi', 'hello', 'hey', 'hii', 'namaste', 'good morning', 'good evening', 'start'];
 
 function isGreeting(text: string): boolean {
   const t = text.trim().toLowerCase();
@@ -21,10 +22,15 @@ export async function handleInboundMessage(
   contactName?: string
 ): Promise<void> {
   let lead = findLead(phone);
+  const brand = env.NBFC_BRAND_NAME;
 
   if (!lead && isGreeting(text)) {
-    lead = createLead(phone, contactName?.trim() || 'WhatsApp Lead');
-    const welcome = `Hi ${lead.name} 👋\n\nWelcome to the WhatsApp Journey Demo!\n\nI will ask a few quick questions to qualify your property interest.\n\n${getQuestion('WELCOME')}`;
+    lead = createLead(phone, contactName?.trim() || 'Customer');
+    const welcome =
+      `Namaste ${lead.name} 🙏\n\n` +
+      `Welcome to *${brand} Customer Service* on WhatsApp.\n\n` +
+      `Main aapki madad kar sakti hoon — loan application, EMI query, documents, ya complaint ke liye.\n\n` +
+      `${getQuestion('WELCOME')}`;
     addMessage(phone, 'IN', text);
     addMessage(phone, 'OUT', welcome);
     await sendWhatsAppMessage(phone, welcome);
@@ -32,23 +38,26 @@ export async function handleInboundMessage(
   }
 
   if (!lead) {
-    console.warn('Unknown phone — send Hi to start', phone);
+    const hint = `Namaste! ${brand} Customer Service mein aapka swagat hai. Shuru karne ke liye *Hi* bhejein.`;
+    await sendWhatsAppMessage(phone, hint);
     return;
   }
 
   addMessage(phone, 'IN', text);
 
   if (lead.step === 'COMPLETE') {
-    const reply = `Hi ${lead.name}! You are already qualified (Score: ${lead.score?.leadScore ?? '—'}). Reply *hi* on a new session after server reset.`;
+    const reply =
+      `Hi ${lead.name}! Aapki request pehle se register hai (Priority: ${lead.score?.priority ?? '—'}).\n\n` +
+      `Nayi query ke liye hamari team aapko call karegi. Dhanyavaad — ${brand}.`;
     addMessage(phone, 'OUT', reply);
     await sendWhatsAppMessage(phone, reply);
     return;
   }
 
-  const { answers, nextStep, invalid } = parseAnswer(lead.step, text);
+  const { answers, nextStep, invalid } = parseAnswer(lead.step, text, lead.answers);
 
   if (invalid) {
-    const hint = 'Please reply *Yes* or *No* for home loan requirement.';
+    const hint = 'Kripya *Yes* ya *No* reply karein — kya aap hamare existing customer hain?';
     addMessage(phone, 'OUT', hint);
     await sendWhatsAppMessage(phone, hint);
     return;
@@ -58,7 +67,7 @@ export async function handleInboundMessage(
 
   if (nextStep === 'COMPLETE') {
     const score = calculateScore(mergedAnswers);
-    const msg = completionMessage(lead.name, mergedAnswers, score);
+    const msg = completionMessage(lead.name, mergedAnswers, score, brand);
     updateLead(phone, { step: 'COMPLETE', answers: mergedAnswers, score });
     addMessage(phone, 'OUT', msg);
     await sendWhatsAppMessage(phone, msg);

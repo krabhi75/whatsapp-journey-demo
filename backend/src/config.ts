@@ -27,7 +27,9 @@ const schema = z.object({
     .transform((v) => v === 'true')
     .default('true'),
   WHATSAPP_ALLOWED_PHONES: z.string().default(''),
+  /** Comma-separated office test numbers — only used when WHATSAPP_SAFE_MODE=true */
   CORS_ORIGIN: z.string().default('*'),
+  NBFC_BRAND_NAME: z.string().default('ABC Finance NBFC'),
 });
 
 export const env = schema.parse(process.env);

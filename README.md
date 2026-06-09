@@ -1,6 +1,8 @@
-# WhatsApp Journey Demo
+# NBFC WhatsApp Customer Service Demo
 
-Standalone WhatsApp 5-question qualification demo. **No PropertyPilot / realty CRM dependency.**
+Standalone NBFC customer service WhatsApp journey. **No property / realty CRM dependency.**
+
+Supports **multiple office phones** for testing (`WHATSAPP_SAFE_MODE=false`).
 
 - **Backend (Render):** Webhook + journey logic
 - **Frontend (Vercel):** Live demo dashboard
@@ -47,10 +49,14 @@ WHATSAPP_VERIFY_TOKEN=propertypilot2026
 WHATSAPP_PHONE_NUMBER_ID=<from Meta>
 WHATSAPP_ACCESS_TOKEN=<permanent token>
 DEMO_MODE=false
-WHATSAPP_SAFE_MODE=true
-WHATSAPP_ALLOWED_PHONES=9430590142
+WHATSAPP_SAFE_MODE=false
+NBFC_BRAND_NAME=ABC Finance NBFC
 CORS_ORIGIN=https://YOUR-VERCEL-APP.vercel.app
 ```
+
+**Multi-phone office testing:**
+- `WHATSAPP_SAFE_MODE=false` → all numbers receive messages (recommended for office demo)
+- `WHATSAPP_SAFE_MODE=true` + `WHATSAPP_ALLOWED_PHONES=9430590142,9876543210,9123456789` → restrict to listed numbers only
 
 (`WHATSAPP_VERIFY_TOKEN` or `META_VERIFY_TOKEN` work — must match Meta webhook verify token.)
 
@@ -83,9 +89,14 @@ cd frontend && cp .env.example .env && npm install && npm run dev
 
 ---
 
-## Demo flow
+## Demo flow (NBFC Customer Service)
 
 ```
-Hi → Welcome + Q1 Property → Q2 Budget → Q3 Timeline → Q4 Purpose → Q5 Loan
-→ Score + completion message → visible on Vercel dashboard
+Hi → Welcome
+  → Q1 Service type (Loan / EMI / Documents / Complaint)
+  → Q2 Loan product (if loan application)
+  → Q3 Loan amount (if loan application)
+  → Q4 Existing customer? Yes/No
+  → Q5 Callback preference
+→ Priority score + completion message → visible on dashboard
 ```

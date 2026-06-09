@@ -14,6 +14,8 @@ services:
       - key: DEMO_MODE
         value: false
       - key: WHATSAPP_SAFE_MODE
-        value: true
+        value: false
+      - key: NBFC_BRAND_NAME
+        value: ABC Finance NBFC
       - key: WHATSAPP_API_VERSION
         value: v21.0
