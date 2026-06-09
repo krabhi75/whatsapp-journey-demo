@@ -4,7 +4,9 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { SEED_MESSAGE_LOGS } from '@/lib/capri-demo-data';
 import { CapriIcon } from './capri-icon';
+import { useCapriDemo } from './capri-demo-context';
 import { CapriShell, CapriWaTabs } from './capri-shell';
+import { API_BASE } from '@/lib/capri-live-sync';
 
 const KPIS = [
   { label: 'Messages Sent', value: '142', trend: '+12%', spark: false },
@@ -25,9 +27,23 @@ const FUNNEL = [
 
 export function CapriWhatsAppOverview() {
   const [period, setPeriod] = useState<'today' | '7d' | '30d'>('7d');
+  const { apiConnected, liveSessionCount } = useCapriDemo();
 
   return (
     <CapriShell searchPlaceholder="Search across communications...">
+      {apiConnected && liveSessionCount === 0 && (
+        <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-900">
+          <strong>Ready for mobile test.</strong> Send <code className="rounded bg-white px-1.5 py-0.5">Hi</code> to your
+          Capri WhatsApp number — this screen updates every 3s. API: {API_BASE}
+        </div>
+      )}
+      {apiConnected && liveSessionCount > 0 && (
+        <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm text-emerald-900">
+          <strong>{liveSessionCount} live session{liveSessionCount === 1 ? '' : 's'}</strong> — open{' '}
+          <a href="/capri/leads" className="font-semibold underline">Leads</a> or{' '}
+          <a href="/capri/callbacks" className="font-semibold underline">Callbacks</a> to see mobile replies.
+        </div>
+      )}
       <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--capri-on-surface-variant)]">
         Mission Control
       </p>

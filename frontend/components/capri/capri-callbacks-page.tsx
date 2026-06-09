@@ -20,8 +20,8 @@ export function CapriCallbacksPage() {
     <CapriShell title="Calls & Callbacks">
       <div className="mb-6">
         <h2 className="text-2xl font-bold">Callback Inbox · Today</h2>
-        <p className="text-sm" style={{ color: 'var(--capri-on-surface-variant)' }}>
-          WhatsApp callback requests captured from test leads
+        <p className="text-sm text-[var(--capri-on-surface-variant)]">
+          Live callback requests from your mobile — updates every 3 seconds
         </p>
       </div>
 
@@ -44,10 +44,18 @@ export function CapriCallbacksPage() {
                 </div>
                 <span className="capri-pill capri-pill-hot text-[10px]">HOT</span>
               </div>
-              <p className="mb-4 rounded-lg border p-3 text-sm italic" style={{ borderColor: 'var(--capri-outline-variant)' }}>
-                &ldquo;{msg?.text ?? 'Callback requested'}&rdquo;
+              <p className="mb-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm font-medium text-emerald-900">
+                {lead.callbackPreference ?? msg?.text ?? 'Callback requested'}
               </p>
-              <p className="mb-4 text-xs opacity-60">{msg?.time ?? 'Recently'}</p>
+              {msg?.text && lead.callbackPreference && (
+                <p className="mb-2 text-xs italic text-[var(--capri-on-surface-variant)]">
+                  Replied: &ldquo;{msg.text}&rdquo;
+                </p>
+              )}
+              {lead.referenceId && (
+                <p className="mb-2 font-mono text-xs text-[var(--capri-primary)]">Ref: {lead.referenceId}</p>
+              )}
+              <p className="mb-4 text-xs opacity-60">{msg?.time ?? 'Live'} · {lead.isLive ? 'WhatsApp' : 'Demo'}</p>
               <div className="flex gap-2">
                 <button type="button" className="capri-btn-primary flex-1 py-2 text-xs">
                   <CapriIcon name="call" size={16} />

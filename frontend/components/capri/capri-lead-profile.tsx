@@ -108,8 +108,16 @@ export function CapriLeadProfile({ leadId }: { leadId: string }) {
           <h1 className="text-lg font-bold" style={{ color: 'var(--capri-primary)' }}>
             {lead.name}
           </h1>
+          {lead.isLive && (
+            <span className="capri-pill capri-pill-live text-[10px]">
+              <span className="mr-1 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+              Live
+            </span>
+          )}
           {lead.score > 0 && (
-            <span className="capri-pill capri-pill-hot">HOT · {lead.score}</span>
+            <span className={`capri-pill ${lead.temperature === 'HOT' ? 'capri-pill-hot' : lead.temperature === 'WARM' ? 'capri-pill-warm' : 'capri-pill-cold'}`}>
+              {lead.temperature} · {lead.score}
+            </span>
           )}
           <span className="capri-pill capri-pill-status">{lead.status.replace(/_/g, ' ')}</span>
         </div>
@@ -206,32 +214,37 @@ export function CapriLeadProfile({ leadId }: { leadId: string }) {
               {[
                 { label: 'Loan Product', value: lead.product },
                 { label: 'Loan Amount', value: lead.loanAmount },
-                { label: 'Employment', value: lead.employment },
-                { label: 'Monthly Income', value: lead.income },
+                { label: 'City', value: lead.city || '—' },
+                { label: 'Urgency', value: lead.urgency },
+                ...(lead.callbackPreference
+                  ? [{ label: 'Callback Window', value: lead.callbackPreference, highlight: true }]
+                  : []),
+                ...(lead.referenceId
+                  ? [{ label: 'Reference ID', value: lead.referenceId }]
+                  : []),
               ].map((f) => (
-                <div key={f.label} className="capri-card p-3">
+                <div
+                  key={f.label}
+                  className={`capri-card p-3 ${'highlight' in f && f.highlight ? 'border-emerald-300 bg-emerald-50' : ''}`}
+                >
                   <p className="text-[11px]" style={{ color: 'var(--capri-on-surface-variant)' }}>
                     {f.label}
                   </p>
-                  <p className="text-sm font-semibold">{f.value}</p>
+                  <p className={`text-sm font-semibold ${'highlight' in f && f.highlight ? 'text-emerald-800' : ''}`}>
+                    {f.value}
+                  </p>
                 </div>
               ))}
-              <div className="flex gap-2">
-                <div className="capri-card flex-1 border-red-200 bg-red-50 p-3">
-                  <p className="text-[11px] text-red-700">Urgency</p>
-                  <p className="text-sm font-semibold text-red-700">{lead.urgency}</p>
+              {lead.score > 0 && (
+                <div className="capri-card p-3" style={{ borderColor: 'rgba(146,70,40,0.2)', background: 'rgba(146,70,40,0.05)' }}>
+                  <p className="text-[11px]" style={{ color: 'var(--capri-tertiary)' }}>
+                    AI Score
+                  </p>
+                  <p className="text-sm font-semibold" style={{ color: 'var(--capri-tertiary)' }}>
+                    {lead.score} · {lead.temperature}
+                  </p>
                 </div>
-                {lead.score > 0 && (
-                  <div className="capri-card flex-1 p-3" style={{ borderColor: 'rgba(146,70,40,0.2)', background: 'rgba(146,70,40,0.05)' }}>
-                    <p className="text-[11px]" style={{ color: 'var(--capri-tertiary)' }}>
-                      Score
-                    </p>
-                    <p className="text-sm font-semibold" style={{ color: 'var(--capri-tertiary)' }}>
-                      {lead.score} HOT
-                    </p>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
 
             <h3 className="mb-3 mt-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--capri-on-surface-variant)' }}>

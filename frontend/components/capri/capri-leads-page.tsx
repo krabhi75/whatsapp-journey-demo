@@ -39,7 +39,7 @@ function StatusDot({ status }: { status: string }) {
 
 export function CapriLeadsPage() {
   const router = useRouter();
-  const { leads, trashLeads, moveToTrash } = useCapriDemo();
+  const { leads, trashLeads, moveToTrash, apiConnected } = useCapriDemo();
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
@@ -70,8 +70,8 @@ export function CapriLeadsPage() {
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Lead Management</h2>
-          <p className="text-sm" style={{ color: 'var(--capri-on-surface-variant)' }}>
-            {filtered.length} active test leads
+          <p className="text-sm text-[var(--capri-on-surface-variant)]">
+            {filtered.length} leads {apiConnected ? '· syncing live from WhatsApp' : '· demo data'}
           </p>
         </div>
         <div className="flex gap-2">
@@ -160,6 +160,9 @@ export function CapriLeadsPage() {
                         {leadInitials(lead.name)}
                       </div>
                       <span className="font-semibold">{lead.name}</span>
+                      {lead.isLive && (
+                        <span className="capri-pill capri-pill-live ml-1 text-[9px]">Live</span>
+                      )}
                     </div>
                   </td>
                   <td className="text-xs">{formatCapriPhone(lead.phone)}</td>

@@ -72,7 +72,7 @@ export function CapriShell({
   breadcrumbs?: { label: string; href?: string }[];
 }) {
   const pathname = usePathname();
-  const { toast, clearToast } = useCapriDemo();
+  const { toast, clearToast, apiConnected, liveSessionCount, lastSyncedAt } = useCapriDemo();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -160,6 +160,21 @@ export function CapriShell({
           </div>
 
           <div className="flex shrink-0 items-center gap-2 md:gap-4">
+            <div
+              className="hidden items-center gap-2 rounded-full border px-3 py-1 sm:flex"
+              style={{
+                borderColor: apiConnected ? '#a7f3d0' : 'var(--capri-outline-variant)',
+                background: apiConnected ? '#ecfdf5' : 'var(--capri-surface-low)',
+              }}
+              title={lastSyncedAt ? `Synced ${new Date(lastSyncedAt).toLocaleTimeString()}` : undefined}
+            >
+              <span
+                className={`h-2 w-2 rounded-full ${apiConnected ? 'animate-pulse bg-emerald-500' : 'bg-gray-400'}`}
+              />
+              <span className="text-[10px] font-bold uppercase tracking-wide text-emerald-800">
+                {apiConnected ? `Live · ${liveSessionCount} session${liveSessionCount === 1 ? '' : 's'}` : 'API offline'}
+              </span>
+            </div>
             <span className="hidden text-xs font-semibold text-[var(--capri-on-surface-variant)] lg:block">
               {CAPRI_TENANT}
             </span>

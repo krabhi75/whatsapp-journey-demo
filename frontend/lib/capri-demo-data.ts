@@ -28,6 +28,10 @@ export interface CapriLead {
   notes?: string;
   deletedAt?: string;
   aiSummary?: string;
+  callbackPreference?: string;
+  referenceId?: string;
+  isLive?: boolean;
+  journeyStep?: string;
 }
 
 export interface CapriWaMessage {

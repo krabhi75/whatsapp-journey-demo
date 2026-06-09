@@ -4,7 +4,9 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -18,6 +20,15 @@ import {
   type CapriWaMessage,
   type CapriTimelineEvent,
 } from '@/lib/capri-demo-data';
+import {
+  API_BASE,
+  checkApiHealth,
+  fetchLiveLeads,
+  isLiveLeadId,
+  mapApiLeadToCapri,
+  mapApiMessages,
+  mapApiTimeline,
+} from '@/lib/capri-live-sync';
 
 export interface CreateLeadInput {
   name: string;
@@ -39,6 +50,9 @@ interface CapriDemoContextValue {
   messages: CapriWaMessage[];
   timeline: CapriTimelineEvent[];
   templates: CapriTemplate[];
+  apiConnected: boolean;
+  liveSessionCount: number;
+  lastSyncedAt: string | null;
   createLead: (input: CreateLeadInput) => CapriLead;
   moveToTrash: (id: string) => void;
   restoreLead: (id: string) => void;
@@ -52,9 +66,12 @@ interface CapriDemoContextValue {
   toast: string | null;
   showToast: (msg: string) => void;
   clearToast: () => void;
+  refreshLive: () => Promise<void>;
 }
 
 const CapriDemoContext = createContext<CapriDemoContextValue | null>(null);
+
+const POLL_MS = 3000;
 
 function slugId(name: string): string {
   return (
@@ -68,12 +85,20 @@ function slugId(name: string): string {
 }
 
 export function CapriDemoProvider({ children }: { children: ReactNode }) {
-  const [leads, setLeads] = useState<CapriLead[]>(SEED_LEADS);
+  const [localLeads, setLocalLeads] = useState<CapriLead[]>([]);
+  const [liveLeads, setLiveLeads] = useState<CapriLead[]>([]);
+  const [liveMessages, setLiveMessages] = useState<CapriWaMessage[]>([]);
+  const [liveTimeline, setLiveTimeline] = useState<CapriTimelineEvent[]>([]);
   const [trashLeads, setTrashLeads] = useState<CapriLead[]>([]);
-  const [messages, setMessages] = useState<CapriWaMessage[]>(SEED_MESSAGES);
-  const [timeline, setTimeline] = useState<CapriTimelineEvent[]>(SEED_TIMELINE);
+  const [localMessages, setLocalMessages] = useState<CapriWaMessage[]>(SEED_MESSAGES);
+  const [localTimeline, setLocalTimeline] = useState<CapriTimelineEvent[]>(SEED_TIMELINE);
   const [templates, setTemplates] = useState<CapriTemplate[]>(SEED_TEMPLATES);
   const [toast, setToast] = useState<string | null>(null);
+  const [apiConnected, setApiConnected] = useState(false);
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
+  const [useSeedFallback, setUseSeedFallback] = useState(true);
+
+  const knownCallbacks = useRef<Set<string>>(new Set());
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
@@ -81,6 +106,73 @@ export function CapriDemoProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const clearToast = useCallback(() => setToast(null), []);
+
+  const refreshLive = useCallback(async () => {
+    const healthy = await checkApiHealth();
+    setApiConnected(healthy);
+    if (!healthy) return;
+
+    try {
+      const apiLeads = await fetchLiveLeads();
+      const mapped = apiLeads.map(mapApiLeadToCapri);
+      const msgs = apiLeads.flatMap(mapApiMessages);
+      const tl = apiLeads.flatMap(mapApiTimeline);
+
+      for (const lead of mapped) {
+        if (lead.status === 'CALLBACK_REQUESTED' && lead.callbackPreference) {
+          const key = `${lead.id}:${lead.callbackPreference}`;
+          if (!knownCallbacks.current.has(key)) {
+            knownCallbacks.current.add(key);
+            if (knownCallbacks.current.size > 1) {
+              showToast(`Callback received from ${lead.name} — ${lead.callbackPreference}`);
+            }
+          }
+        }
+      }
+
+      setLiveLeads(mapped);
+      setLiveMessages(msgs);
+      setLiveTimeline(tl);
+      setLastSyncedAt(new Date().toISOString());
+      setUseSeedFallback(apiLeads.length === 0);
+    } catch {
+      setApiConnected(false);
+    }
+  }, [showToast]);
+
+  useEffect(() => {
+    refreshLive();
+    const id = setInterval(refreshLive, POLL_MS);
+    return () => clearInterval(id);
+  }, [refreshLive]);
+
+  const seedLeads = useSeedFallback && liveLeads.length === 0 ? SEED_LEADS : [];
+  const manualLeads = localLeads.filter(
+    (l) => !liveLeads.some((live) => live.phone === l.phone)
+  );
+
+  const leads = useMemo(
+    () => [...liveLeads, ...manualLeads, ...seedLeads.filter((s) => !liveLeads.some((l) => l.phone === s.phone))],
+    [liveLeads, manualLeads, seedLeads]
+  );
+
+  const messages = useMemo(() => {
+    const liveIds = new Set(liveLeads.map((l) => l.id));
+    const localOnly = localMessages.filter((m) => !liveIds.has(m.leadId));
+    const seedOnly = useSeedFallback
+      ? SEED_MESSAGES.filter((m) => !liveIds.has(m.leadId) && !localOnly.some((l) => l.leadId === m.leadId))
+      : [];
+    return [...liveMessages, ...localOnly, ...seedOnly];
+  }, [liveMessages, liveLeads, localMessages, useSeedFallback]);
+
+  const timeline = useMemo(() => {
+    const liveIds = new Set(liveLeads.map((l) => l.id));
+    const localOnly = localTimeline.filter((t) => !liveIds.has(t.leadId));
+    const seedOnly = useSeedFallback
+      ? SEED_TIMELINE.filter((t) => !liveIds.has(t.leadId))
+      : [];
+    return [...liveTimeline, ...localOnly, ...seedOnly];
+  }, [liveTimeline, liveLeads, localTimeline, useSeedFallback]);
 
   const createLead = useCallback(
     (input: CreateLeadInput): CapriLead => {
@@ -106,14 +198,14 @@ export function CapriDemoProvider({ children }: { children: ReactNode }) {
         aiSummary: 'AI summary will appear after WhatsApp qualification.',
       };
 
-      setLeads((prev) => [lead, ...prev]);
+      setLocalLeads((prev) => [lead, ...prev]);
 
       const now = new Date().toLocaleTimeString('en-IN', {
         hour: '2-digit',
         minute: '2-digit',
       });
 
-      setTimeline((prev) => [
+      setLocalTimeline((prev) => [
         {
           id: `tl-${id}`,
           leadId: id,
@@ -131,28 +223,16 @@ export function CapriDemoProvider({ children }: { children: ReactNode }) {
           leadId: id,
           direction: 'OUTBOUND',
           template: 'loan_welcome',
-          text: `Hello ${input.name.split(' ')[0]}! Welcome to Capri WhatsApp Demo. Which loan amount range are you looking for? 1. Below ₹5L, 2. ₹5-15L, 3. Above ₹15L`,
+          text: `Hello ${input.name.split(' ')[0]}! Welcome to Capri WhatsApp Demo.`,
           time: now,
           status: 'SENT',
         };
-        setMessages((prev) => [...prev, welcomeMsg]);
-        setTimeline((prev) => [
-          {
-            id: `tls-${id}`,
-            leadId: id,
-            title: 'WhatsApp Sent',
-            detail: 'Template: loan_welcome',
-            time: now,
-            kind: 'secondary',
-          },
-          ...prev,
-        ]);
+        setLocalMessages((prev) => [...prev, welcomeMsg]);
         lead.lastActivity = 'Template sent just now';
-        lead.lastActivityDetail = 'Sent';
         lead.status = 'QUALIFYING';
       }
 
-      showToast('Lead created — WhatsApp welcome message queued');
+      showToast('Lead created — send Hi on WhatsApp to start live journey');
       return lead;
     },
     [showToast]
@@ -160,13 +240,18 @@ export function CapriDemoProvider({ children }: { children: ReactNode }) {
 
   const moveToTrash = useCallback(
     (id: string) => {
-      setLeads((prev) => {
+      if (isLiveLeadId(id)) {
+        showToast('Live WhatsApp sessions cannot be trashed — they clear on server restart');
+        return;
+      }
+      if (SEED_LEADS.some((s) => s.id === id)) {
+        showToast('Demo sample — complete a live WhatsApp journey to test callbacks');
+        return;
+      }
+      setLocalLeads((prev) => {
         const lead = prev.find((l) => l.id === id);
         if (!lead) return prev;
-        setTrashLeads((t) => [
-          { ...lead, deletedAt: new Date().toISOString() },
-          ...t,
-        ]);
+        setTrashLeads((t) => [{ ...lead, deletedAt: new Date().toISOString() }, ...t]);
         showToast(`"${lead.name}" moved to trash`);
         return prev.filter((l) => l.id !== id);
       });
@@ -180,7 +265,7 @@ export function CapriDemoProvider({ children }: { children: ReactNode }) {
         const lead = prev.find((l) => l.id === id);
         if (!lead) return prev;
         const { deletedAt: _, ...restored } = lead;
-        setLeads((l) => [restored, ...l]);
+        setLocalLeads((l) => [restored, ...l]);
         showToast(`"${lead.name}" restored`);
         return prev.filter((l) => l.id !== id);
       });
@@ -195,8 +280,8 @@ export function CapriDemoProvider({ children }: { children: ReactNode }) {
         if (lead) showToast(`"${lead.name}" permanently deleted`);
         return prev.filter((l) => l.id !== id);
       });
-      setMessages((prev) => prev.filter((m) => m.leadId !== id));
-      setTimeline((prev) => prev.filter((t) => t.leadId !== id));
+      setLocalMessages((prev) => prev.filter((m) => m.leadId !== id));
+      setLocalTimeline((prev) => prev.filter((t) => t.leadId !== id));
     },
     [showToast]
   );
@@ -217,17 +302,12 @@ export function CapriDemoProvider({ children }: { children: ReactNode }) {
   );
 
   const addTemplate = useCallback((tpl: Omit<CapriTemplate, 'id'>) => {
-    setTemplates((prev) => [
-      { ...tpl, id: `tpl-${Date.now()}` },
-      ...prev,
-    ]);
+    setTemplates((prev) => [{ ...tpl, id: `tpl-${Date.now()}` }, ...prev]);
     showToast('Template created — submit to Meta for approval');
   }, [showToast]);
 
   const toggleTemplate = useCallback((id: string) => {
-    setTemplates((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, active: !t.active } : t))
-    );
+    setTemplates((prev) => prev.map((t) => (t.id === id ? { ...t, active: !t.active } : t)));
   }, []);
 
   const deleteTemplate = useCallback((id: string) => {
@@ -242,6 +322,9 @@ export function CapriDemoProvider({ children }: { children: ReactNode }) {
       messages,
       timeline,
       templates,
+      apiConnected,
+      liveSessionCount: liveLeads.length,
+      lastSyncedAt,
       createLead,
       moveToTrash,
       restoreLead,
@@ -255,6 +338,7 @@ export function CapriDemoProvider({ children }: { children: ReactNode }) {
       toast,
       showToast,
       clearToast,
+      refreshLive,
     }),
     [
       leads,
@@ -262,6 +346,9 @@ export function CapriDemoProvider({ children }: { children: ReactNode }) {
       messages,
       timeline,
       templates,
+      apiConnected,
+      liveLeads.length,
+      lastSyncedAt,
       createLead,
       moveToTrash,
       restoreLead,
@@ -275,12 +362,11 @@ export function CapriDemoProvider({ children }: { children: ReactNode }) {
       toast,
       showToast,
       clearToast,
+      refreshLive,
     ]
   );
 
-  return (
-    <CapriDemoContext.Provider value={value}>{children}</CapriDemoContext.Provider>
-  );
+  return <CapriDemoContext.Provider value={value}>{children}</CapriDemoContext.Provider>;
 }
 
 export function useCapriDemo() {
@@ -288,3 +374,5 @@ export function useCapriDemo() {
   if (!ctx) throw new Error('useCapriDemo must be used within CapriDemoProvider');
   return ctx;
 }
+
+export { API_BASE };

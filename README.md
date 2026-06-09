@@ -79,10 +79,19 @@ curl "https://YOUR-RENDER-APP.onrender.com/webhooks/whatsapp?hub.mode=subscribe&
 4. Deploy
 
 **Routes after deploy:**
-- `https://YOUR-APP.vercel.app/` → WhatsApp Overview (Stitch UI)
-- `/capri/leads` → Lead management
-- `/capri/leads/priya-nair` → WhatsApp thread + callback demo
-- `/classic` → Live sessions from Render API
+- `https://YOUR-APP.vercel.app/` → WhatsApp Overview (Stitch UI, **live sync**)
+- `/capri/leads` → Lead list — your mobile session appears here automatically
+- `/capri/leads/lead_<phone>` → Live WhatsApp thread + callback on screen
+- `/capri/callbacks` → Callback inbox when you pick a time window on mobile
+- `/classic` → Raw API view (legacy)
+
+### Mobile callback test (live on screen)
+
+1. Set Vercel env `NEXT_PUBLIC_API_URL` = your Render backend URL
+2. Set Render `CORS_ORIGIN` = your Vercel URL (or `*`)
+3. On phone: send **Hi** to Capri WhatsApp → complete loan journey → pick callback slot (1/2/3)
+4. On laptop: open `/capri/leads` — session shows **Live** badge; open profile to see thread + **Callback Window**
+5. Header shows **Live · N sessions** (polls every 3s)
 
 ---
 
