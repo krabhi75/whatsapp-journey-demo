@@ -111,11 +111,11 @@ export default function Home() {
           <div key={lead.id} style={{ borderTop: '1px solid #e2e8f0', paddingTop: 12, marginTop: 12 }}>
             <div>
               <strong>{lead.name}</strong> · +{lead.phone} · <em>{lead.step}</em>
-              {lead.answers.referenceId && (
+              {lead.answers.referenceId != null && lead.answers.referenceId !== '' ? (
                 <span style={{ marginLeft: 8, fontSize: 12, color: '#6366f1' }}>
                   {String(lead.answers.referenceId)}
                 </span>
-              )}
+              ) : null}
               {lead.score && (
                 <span style={{ marginLeft: 8, color: lead.score.priority === 'HIGH' ? '#dc2626' : '#2563eb' }}>
                   {lead.score.priority} · {lead.score.leadScore}/100
