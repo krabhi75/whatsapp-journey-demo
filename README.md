@@ -33,13 +33,17 @@ Do **not** subscribe to `account_alerts`, `account_update`, etc. — not needed 
 1. Push this repo to GitHub
 2. Render → New Web Service → connect repo
 3. **Root directory:** `backend`
-4. **Build:** `npm install && npm run build`
-5. **Start:** `npm start`
+4. **Build command:** `npm install && npm run build`
+5. **Start command:** `npm start`
+
+> **IMPORTANT:** This demo has **no Prisma / no database**.  
+> Do **NOT** use `npx prisma generate` in the build command (that is for the main realty-ai-sdr project only).
+
 6. **Environment variables:**
 
 ```
 APP_URL=https://YOUR-RENDER-APP.onrender.com
-WEBHOOK_VERIFY_TOKEN=waba-webhook-verify
+WHATSAPP_VERIFY_TOKEN=propertypilot2026
 WHATSAPP_PHONE_NUMBER_ID=<from Meta>
 WHATSAPP_ACCESS_TOKEN=<permanent token>
 DEMO_MODE=false
@@ -47,6 +51,8 @@ WHATSAPP_SAFE_MODE=true
 WHATSAPP_ALLOWED_PHONES=9430590142
 CORS_ORIGIN=https://YOUR-VERCEL-APP.vercel.app
 ```
+
+(`WHATSAPP_VERIFY_TOKEN` or `META_VERIFY_TOKEN` work — must match Meta webhook verify token.)
 
 7. After deploy, test:
 ```bash

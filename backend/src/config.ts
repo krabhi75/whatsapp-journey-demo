@@ -3,6 +3,14 @@ import { z } from 'zod';
 
 dotenv.config();
 
+// Accept Meta portal naming (WHATSAPP_VERIFY_TOKEN / META_VERIFY_TOKEN)
+if (!process.env.WEBHOOK_VERIFY_TOKEN?.trim()) {
+  process.env.WEBHOOK_VERIFY_TOKEN =
+    process.env.WHATSAPP_VERIFY_TOKEN?.trim() ||
+    process.env.META_VERIFY_TOKEN?.trim() ||
+    'waba-webhook-verify';
+}
+
 const schema = z.object({
   PORT: z.coerce.number().default(4000),
   APP_URL: z.string().default('http://localhost:4000'),

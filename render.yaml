@@ -1,0 +1,19 @@
+# Render Blueprint — deploy from repo root
+# This project has NO Prisma / database. Do NOT use "npx prisma generate" in build.
+services:
+  - type: web
+    name: whatsapp-journey-demo-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DEMO_MODE
+        value: false
+      - key: WHATSAPP_SAFE_MODE
+        value: true
+      - key: WHATSAPP_API_VERSION
+        value: v21.0
