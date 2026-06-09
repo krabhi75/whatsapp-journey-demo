@@ -89,14 +89,18 @@ cd frontend && cp .env.example .env && npm install && npm run dev
 
 ---
 
-## Demo flow (NBFC Customer Service)
+## Demo flow (Capri Global — capriloans.in)
 
 ```
-Hi → Welcome
-  → Q1 Service type (Loan / EMI / Documents / Complaint)
-  → Q2 Loan product (if loan application)
-  → Q3 Loan amount (if loan application)
-  → Q4 Existing customer? Yes/No
-  → Q5 Callback preference
-→ Priority score + completion message → visible on dashboard
+Hi → Welcome (2 messages) → Main menu (7 options)
+
+Loan paths: Gold / Home / MSME / LAP
+  → Product ack + highlights
+  → Amount (product-specific ranges)
+  → City → Urgency → Existing customer? → Callback
+  → Reference ID + priority score
+
+Other paths: EMI/Pay Now · Branch locator · Documents · Complaints
+
+After complete: MENU · APP · BRANCH · RATES · PRODUCTS · EMI
 ```

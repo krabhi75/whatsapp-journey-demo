@@ -40,7 +40,7 @@ export function createLead(phone: string, name: string): Lead {
     id: `lead_${key}`,
     phone: key,
     name,
-    step: 'SERVICE_TYPE',
+    step: 'MAIN_MENU',
     answers: {},
     messages: [],
     createdAt: now,

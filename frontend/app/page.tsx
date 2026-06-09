@@ -15,6 +15,39 @@ interface Lead {
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
+const FLOWS = [
+  {
+    title: '🏆 Gold Loan (full journey)',
+    steps: ['Hi', '1', '2', 'Pune', '1', 'Nahi', '2'],
+    desc: 'Gold Loan → amount → city → urgent → new customer → afternoon callback',
+  },
+  {
+    title: '🏠 Home Loan',
+    steps: ['Hi', '2', '2', 'Delhi', '3', 'Haan', '1'],
+    desc: 'Home Loan path with existing customer',
+  },
+  {
+    title: '💳 EMI / Pay Now',
+    steps: ['Hi', '5', '1'],
+    desc: 'Instant Pay Now app link',
+  },
+  {
+    title: '📍 Branch locator',
+    steps: ['Hi', '6', '1', 'Mumbai'],
+    desc: 'Find nearest Capri branch',
+  },
+  {
+    title: '🎫 Complaint (priority)',
+    steps: ['Hi', '6', '4', '3'],
+    desc: 'High-priority complaint flow',
+  },
+  {
+    title: '📋 Post-complete commands',
+    steps: ['(after complete)', 'RATES', 'APP', 'MENU'],
+    desc: 'Rates, app link, return to menu',
+  },
+];
+
 export default function Home() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [health, setHealth] = useState<Record<string, unknown> | null>(null);
@@ -33,65 +66,68 @@ export default function Home() {
       }
     };
     load();
-    const id = setInterval(load, 5000);
+    const id = setInterval(load, 4000);
     return () => clearInterval(id);
   }, []);
 
-  const webhookUrl = health?.webhookUrl as string | undefined;
   const brand = (health?.brand as string) || 'Capri Global';
 
   return (
-    <main style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>
-      <h1 style={{ color: '#0f172a' }}>{brand} — WhatsApp Customer Service</h1>
-      <p style={{ color: '#475569' }}>
-        NBFC customer service journey demo. Multiple office phones supported.
+    <main style={{ maxWidth: 960, margin: '0 auto', padding: 24, fontFamily: 'system-ui' }}>
+      <h1 style={{ color: '#1e3a5f' }}>{brand} — WhatsApp AI Demo</h1>
+      <p style={{ color: '#64748b' }}>
+        Dynamic Capri Loans journey · Hinglish · Multi-flow · Post-complete actions
       </p>
 
-      <section style={{ background: '#fff', borderRadius: 12, padding: 20, marginBottom: 20, boxShadow: '0 1px 3px #0001' }}>
-        <h2>Status</h2>
-        <p>Safe mode: <strong>{String(health?.safeMode ?? '—')}</strong></p>
-        <p>Allowed phones: <strong>{String(health?.allowedPhones ?? '—')}</strong></p>
-        <p>Verify token: <strong>{String(health?.verifyToken ?? 'propertypilot2026')}</strong></p>
+      <section style={card}>
+        <h2>Capri Products (from capriloans.in)</h2>
+        <ul style={{ lineHeight: 1.9 }}>
+          <li>🏆 Gold Loan — ₹3K to ₹30L · instant disbursal</li>
+          <li>🏠 Home Loan — ₹5L to ₹150L</li>
+          <li>💼 MSME Loan — up to ₹150L</li>
+          <li>🏗️ Micro LAP — up to ₹10L</li>
+          <li>🔨 Construction Finance</li>
+        </ul>
+        <p style={{ fontSize: 13, color: '#64748b' }}>1,400+ branches · 6.9L+ customers · Flexi-payment</p>
       </section>
 
-      <section style={{ background: '#fff', borderRadius: 12, padding: 20, marginBottom: 20, boxShadow: '0 1px 3px #0001' }}>
-        <h2>Meta Webhook</h2>
-        <code style={{ display: 'block', background: '#f1f5f9', padding: 12, borderRadius: 8, wordBreak: 'break-all' }}>
-          {webhookUrl || `${API}/webhooks/whatsapp`}
-        </code>
-        <p style={{ color: '#64748b', fontSize: 14, marginTop: 8 }}>Subscribe: <strong>messages</strong> only</p>
+      <section style={card}>
+        <h2>Demo Flows for Office Presentation</h2>
+        {FLOWS.map((f) => (
+          <div key={f.title} style={{ marginBottom: 16, paddingBottom: 16, borderBottom: '1px solid #e2e8f0' }}>
+            <strong>{f.title}</strong>
+            <p style={{ fontSize: 13, color: '#64748b', margin: '4px 0' }}>{f.desc}</p>
+            <code style={{ fontSize: 12, background: '#f1f5f9', padding: '4px 8px', borderRadius: 4 }}>
+              {f.steps.join(' → ')}
+            </code>
+          </div>
+        ))}
       </section>
 
-      <section style={{ background: '#fff', borderRadius: 12, padding: 20, marginBottom: 20, boxShadow: '0 1px 3px #0001' }}>
-        <h2>Office Demo Script (NBFC)</h2>
-        <ol style={{ lineHeight: 1.8 }}>
-          <li>Any office phone sends <strong>Hi</strong> to the WhatsApp business number</li>
-          <li><strong>1</strong> — New Loan Application</li>
-          <li><strong>2</strong> — Home Loan</li>
-          <li><strong>2</strong> — ₹5–25 Lakh</li>
-          <li><strong>No</strong> — New customer</li>
-          <li><strong>1</strong> — Morning callback</li>
-          <li>Completion message with priority score appears on WhatsApp + below</li>
-        </ol>
-        <p style={{ fontSize: 14, color: '#64748b' }}>
-          For EMI query path: reply <strong>2</strong> at step 1 — skips loan product questions.
-        </p>
-      </section>
-
-      <section style={{ background: '#fff', borderRadius: 12, padding: 20, boxShadow: '0 1px 3px #0001' }}>
-        <h2>Live Customers ({leads.length})</h2>
-        {leads.length === 0 && <p style={{ color: '#94a3b8' }}>No sessions yet — send Hi from any office phone.</p>}
+      <section style={card}>
+        <h2>Live Sessions ({leads.length})</h2>
+        {leads.length === 0 && <p style={{ color: '#94a3b8' }}>Send Hi from any office phone to start.</p>}
         {leads.map((lead) => (
-          <div key={lead.id} style={{ borderTop: '1px solid #e2e8f0', paddingTop: 16, marginTop: 16 }}>
-            <strong>{lead.name}</strong> · +{lead.phone} · {lead.step}
-            {lead.score && (
-              <span style={{ marginLeft: 8, color: lead.score.priority === 'HIGH' ? '#dc2626' : '#2563eb' }}>
-                {lead.score.priority} · {lead.score.leadScore}/100
-              </span>
-            )}
-            <div style={{ fontSize: 13, color: '#64748b', marginTop: 8 }}>
-              {lead.messages.slice(-4).map((m, i) => (
-                <div key={i}>{m.direction === 'IN' ? '←' : '→'} {m.text.slice(0, 100)}</div>
+          <div key={lead.id} style={{ borderTop: '1px solid #e2e8f0', paddingTop: 12, marginTop: 12 }}>
+            <div>
+              <strong>{lead.name}</strong> · +{lead.phone} · <em>{lead.step}</em>
+              {lead.answers.referenceId && (
+                <span style={{ marginLeft: 8, fontSize: 12, color: '#6366f1' }}>
+                  {String(lead.answers.referenceId)}
+                </span>
+              )}
+              {lead.score && (
+                <span style={{ marginLeft: 8, color: lead.score.priority === 'HIGH' ? '#dc2626' : '#2563eb' }}>
+                  {lead.score.priority} · {lead.score.leadScore}/100
+                </span>
+              )}
+            </div>
+            <div style={{ fontSize: 12, color: '#64748b', marginTop: 6, maxHeight: 120, overflow: 'auto' }}>
+              {lead.messages.map((m, i) => (
+                <div key={i} style={{ marginBottom: 2 }}>
+                  {m.direction === 'IN' ? '←' : '→'} {m.text.slice(0, 120)}
+                  {m.text.length > 120 ? '…' : ''}
+                </div>
               ))}
             </div>
           </div>
@@ -100,3 +136,11 @@ export default function Home() {
     </main>
   );
 }
+
+const card: React.CSSProperties = {
+  background: '#fff',
+  borderRadius: 12,
+  padding: 20,
+  marginBottom: 20,
+  boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+};

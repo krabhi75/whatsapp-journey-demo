@@ -54,7 +54,7 @@ app.get('/health', (_req, res) => {
   res.json({
     ok: true,
     service: 'whatsapp-journey-demo',
-    journey: 'NBFC Customer Service',
+    journey: 'Capri Global — Dynamic WhatsApp CS',
     brand: env.NBFC_BRAND_NAME,
     whatsappLive: isWhatsAppLive,
     safeMode: env.WHATSAPP_SAFE_MODE,
