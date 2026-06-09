@@ -16,6 +16,6 @@ services:
       - key: WHATSAPP_SAFE_MODE
         value: false
       - key: NBFC_BRAND_NAME
-        value: ABC Finance NBFC
+        value: Capri Global
       - key: WHATSAPP_API_VERSION
         value: v21.0

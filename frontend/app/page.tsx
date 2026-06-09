@@ -38,7 +38,7 @@ export default function Home() {
   }, []);
 
   const webhookUrl = health?.webhookUrl as string | undefined;
-  const brand = (health?.brand as string) || 'ABC Finance NBFC';
+  const brand = (health?.brand as string) || 'Capri Global';
 
   return (
     <main style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>
